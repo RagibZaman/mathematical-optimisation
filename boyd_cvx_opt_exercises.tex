@@ -1,0 +1,555 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage{ucs}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{fontenc}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{trees}
+
+\title{Exercises from Boyd and Vandenberghe's "Convex Optimization"}
+\author{Ragib Zaman}
+
+\newcommand{\bi}[2]{ \binom{#1}{#2}  }
+\newcommand{\p}{\prod}
+\newcommand{\e}{\mathbf{e}}
+
+\begin{document}
+\maketitle
+
+This document contains the subset of my solutions to problems in Boyd and Vandenberghe's text on Convex Optimization which I have typed into LaTeX. Their book is freely available on their website: \\
+\
+\ https://web.stanford.edu/~boyd/cvxbook/
+
+\paragraph{Notation}
+\
+\newline
+In this document $u\cdot v$ denotes the Euclidean inner product of $u$ and $v$ (so $u\cdot v = u^Tv$) and $\e_i$ denotes the $i$-th standard basis vector of $\mathbb{R}^n$ (so the components of $\e_i$ are $0$ except the $i$-th component which is $1$). $F$ denotes the feasible set of an optimization problem. $\mathbb{P}(A)$ denotes probability of an event $A.$ $\Phi_X,$ and  $p_X$ denote the cumulative distribution function and density function of a random variable $X.$
+
+
+
+\paragraph*{2.12}
+In the following, let $X$ denote the set in question.
+\newline
+(a) $X$ is convex - it is the intersection of the two halfspaces $a\cdot x \leq \beta$ and $a\cdot x \geq \alpha.$ 
+\newline
+(b) $X$ is convex - it is the intersection of the $2n$ halfspaces given by $\e_i\cdot x \leq \beta_i$ and $\e_i \cdot x \geq \alpha_i,$ for $i=1,\ldots, n.$ 
+\newline
+(c) $X$ is convex - it is the intersection of two halfspaces.
+\newline
+(d) Note that $$X = \bigcap_{y\in S} \{ x \ | \ \|x-x_0\|_2 \leq \| x - y \|_2 \}.$$
+By the first question of the assignment, we can see that this is the intersection of halfspaces, so $X$ is convex. 
+\newline
+(e) $X$ is not convex in general. Consider $S = \{ \pm 1\}$ and $T=\{ 0\}.$ Then $X = (-\infty, -1/2] \cup [1/2, \infty)$ which is not convex.
+\newline
+(f) $X$ is convex - Take arbitrary $x_1, x_2\in X$ and $\alpha \in S_2.$ Let $x = tx_1 + (1-t)x_2$ for some $t\in [0,1].$ We will show that $x + \alpha \in S_1$ which proves the convexity of $X.$ 
+
+\begin{align*}
+ x + \alpha &= tx_1 + (1-t)x_2 + \alpha \\
+ &= t(x_1+\alpha) + (1-t)(x_2+\alpha) 
+\end{align*}
+
+By definition of $x_1$ and $x_2$ we know that $x_1+\alpha, x_2+\alpha \in S_1.$ Then $x+\alpha \in S_1$ follows from the convexity of $S_1.$ 
+\newline
+(g) $X$ is convex. Question 1 of this assignment shows that if $\theta =1$ then $X$ is a halfspace. Now suppose $0\leq \theta < 1.$ By the linearity properties of the inner product we can distribute terms in the defining condition to rewrite it as 
+
+$$ (1-\theta^2) x\cdot x + (2\theta^2b-2a)\cdot x + a\cdot a - \theta^2b\cdot b \leq 0.$$
+
+Since $1-\theta^2 \in (0,1],$ we can complete the square to write the condition as $$\| x- x_0 \|_2 \leq L$$ for some $L\in \mathbb{R}.$ If $L>0,$ then $X$ is a ball centered at $x_0.$ If $L=0$ then $X = \{ x_0\}.$ If $L< 0$ then $X = \emptyset.$ In all cases, $X$ is convex. (If we actually did the calculations we could verify that $L>0$, but that isn't required to answer the question). 
+
+\paragraph*{2.15}
+The probability simplex $P$ is clearly convex. Let $P'$ denote the set of points $p$ which satisfy the conditions of the question.
+\newline
+(a) $P'$ is convex - Let $b\in\mathbb{R}^n$ be the vector with $b_i = f(a_i).$ Then $P'$ is the intersection of $P$, the halfspace $b\cdot p \leq \beta$ and the halfspace $b\cdot p \geq \alpha.$ 
+\newline
+(b) $P'$ is convex - Let $b\in \mathbb{R}^n$ be the vector with $b_i = 1$ if $\alpha_i > \alpha,$ and $0$ otherwise. Then $P'$ is the intersection of $P$ and the halfspace $b\cdot p \leq \beta.$
+\newline
+(e) $P'$ is convex - This is just the special case of (a) with $f(x) = x^2$ and $\beta = \infty.$ 
+\newline
+(f) $P'$ is not convex in general - Take the case $n=2,$ $(a_1,a_2) = (-1,1)$ and $\alpha = 1.$ Using $\mathbf{var}(x) = \mathbf{E}(X^2) - \mathbf{E}(X)^2,$ our extra condition is $$ p_1 + p_2 - (p_2-p_1)^2 \leq 1.$$ The points $(p_1,p_2) = (0,1), (1,0)$ satisfy this condition but $(p_1,p_2) = (1/2, 1/2)$ does not, so the set of $p$ is not convex. 
+
+\paragraph*{3.14}
+\
+\newline
+(a) From the known second order conditions for convexity and concavity, a second order condition for $f$ to be convex-concave is for the top-left $n\times n$ block of its Hessian to be positive semidefinite and for the bottom-right $m\times m$ block of its Hessian to be negative semidefinite, for all $(x,z)\in\mathbb{R}^n\times \mathbb{R}^m.$
+\newline
+(b) The function $f$ is convex in $x$ and concave in $z.$ The first order condition for convexity yields $$ f(x, \bar{z}) \geq f(\bar{x},\bar{z}) + \nabla f(\bar{x}, \bar{z}) \cdot (x-\bar{x}, 0) = f(\bar{x},\bar{z}).$$
+
+Similarly, the first order condition concavity yields 
+$$ f(\bar{x}, z) \leq f(\bar{x}, \bar{z}) + \nabla f(\bar{x}, \bar{z}) \cdot (0, z-\bar{z}) = f(\bar{x}, \bar{z}).$$ Together these give the saddle-point property. 
+\newline
+Now we show that strong max-min property. We repeatedly apply only the basic defining properties of infimum and supremum. First now that for all $x,z$ we have $f(x,z) \leq \sup_z f(x,z).$ This implies $\inf_x f(x,z) \leq \sup_z f(x,z),$ so $\sup_z \inf_x f(x,z) \leq \sup_z f(x,z).$ Finally, this implies $$ \sup_z \inf_x f(x,z) \leq \inf_x \sup_z f(x,z).$$
+\newline
+On the other hand, for all $x,z$ we have $f(x,z) \geq \inf_x f(x,z).$ Therefore $\sup_z f(x,z) \geq \inf_x f(x,z),$ which implies $\inf_x \sup_z f(x,z) \geq \inf_x f(x,z).$ Finally, this implies 
+$$ \inf_x \sup_z f(x,z) \geq \sup_z \inf_x f(x,z).$$
+Combining the two inequalities gives the result. 
+\newline
+Finally, we show the common value is $f(\bar{x}, \bar{z}).$ Note that for all $z,$ we have $\inf_x f(x,z) \leq f(\bar{x}, z) \leq f(\bar{x}, \bar{z}),$ so 
+$$ \sup_z \inf_x f(x,z) \leq f(\bar{x}, \bar{z}).$$
+Similarly, for all $x$ we have $\sup_z f(x,z) \geq f(x,\bar{z}\geq f(\bar{x}, \bar{z})$, so
+$$ \inf_x \sup_z f(x,z) \geq f(\bar{x}, \bar{z}).$$ This shows the common value is $f(\bar{x}, \bar{z}).$
+\newline
+(c) By the saddle-point condition, $x=\bar{x}$ minimizes $f(x,\bar{z}),$ so $\nabla f_x(\bar{x}, \bar{z}) =0.$ Similarly, again by the saddle-point condition, $z=\bar{z}$ maximizes $f(\bar{x}, z)$ so $\nabla f_z (\bar{x}, \bar{z}) =0.$ Joining these two vectors gives $\nabla f (\bar{x}, \bar{z}) = 0,$ which proves the result. 
+
+
+\paragraph*{3.16}
+All functions in this question are defined on convex domains and are twice differentiable, so we will use the second order conditions to determine convexity/concavity. $H(x)$ will denote the Hession matrix of $f$ evaluated at $x.$ 
+
+\paragraph*{3.16 (a) }
+$H(x) = e^x > 0 $ so $f$ is convex (and therefore quasiconvex as well). Only linear functions are both convex and concave, so $f$ is not concave. It is also quasiconcave, since the $\alpha$-level set of $-f:$ 
+
+$$ S_{\alpha}(-f) = \{ x \in \mathbb{R} \ | \ e^x \geq 1 - \alpha \}$$ 
+is an interval. 
+
+\paragraph*{3.16 (b) }
+
+$$
+H(x) = 
+\begin{bmatrix}
+    0       & 1 \\
+    1       & 0 \\
+\end{bmatrix}
+$$
+
+has eigenvalues $-1, 1$ so is neither positive semidefinite nor negative semidefinite, so $f$ is neither convex or concave. Its $1$-sublevel set is the part of the first quadrant that is under a hyperbola. This is not a convex set so $f$ is not quasiconvex. Its $\alpha$-superlevel sets are the first quadrant if $\alpha \leq 0$ and the portion of the first quadrant above a hyperbola if $\alpha >0$ - convex in both cases. So $f$ is quasiconcave. 
+
+
+\paragraph*{3.16 (c) }
+$$
+H(x) = \frac{1}{x_1x_2}
+\begin{bmatrix}
+    2/x_1^2       & 1/(x_1x_2) \\
+    1/(x_1x_2)       & 2/x_2^2 \\
+\end{bmatrix}
+$$
+
+The characteristic polynomial of the matrix above can be written as $$x_1^2 x_2^2 \lambda^2 - 2(x_1^2+x_2^2) + 3.$$
+A quadratic $ax^2+bx+c$ with $a>0$ has non-negative roots if and only if $-b - \sqrt{b^2-4ac} \geq 0.$ Here that quantity is 
+
+\begin{align*}
+ 2(x_1^2 + x_2^2) - 2\sqrt{(x_1^2+x_2^2)^2 - 3 x_1^2 x_2^2} &= 2 \left( x_1^2 + x_2^2 - \sqrt{ x_1^4 + x_2^4 - x_1^2x_2^2 }\right) \\
+ &\geq 2 \left( x_1^2 + x_2^2 - \sqrt{ x_1^4 + x_2^4 +2 x_1^2x_2^2 }\right) \\
+ &\geq 0
+\end{align*}
+
+so $H(x)$ has is positive semidefinite, and $f(x)$ is convex (and quasiconvex). Its $1$-superlevel set is the portion of the first quadrant under a hyperbola, which is not convex. So $f$ is not quasiconcave, implying $f$ is not concave either. 
+
+
+\paragraph*{3.16 (d) }
+$$
+H(x) = 
+\begin{bmatrix}
+    0       & -1/x_2^2 \\
+    -1/x_2^2       & 2x_1/x_2^3 \\
+\end{bmatrix}
+$$
+
+In particular, 
+$$
+H(1/2, 1) = 
+\begin{bmatrix}
+    0       & -1 \\
+    -1       & 1 \\
+\end{bmatrix}
+$$
+
+has eigenvalues $\frac{1 \pm \sqrt{5}}{2},$ so $f$ is neither convex nor concave. The $\alpha$-sublevel is the intersection of $\mathbb{R}^2_{++}$ and the halfspace defined by $\alpha x_2 \geq x_1,$ so it is convex. Similarly, the $\alpha$ superlevels are also convex. So $f$ is both quasiconvex and quasiconcave. 
+
+
+
+\paragraph*{3.16 (e) }
+$$
+H(x) = 
+\begin{bmatrix}
+    2/x_2       & -2x_1/x_2^2 \\
+    -2x_1/x_2^2       & 2x_1^2/x_2^3 \\
+\end{bmatrix}
+$$
+
+Factoring out $2/x_2$ we can see that $H(x) = (2/x_2) AA^T$ where $A = \begin{bmatrix}1 \\-x_1/x_2\end{bmatrix}.$ Since $AA^T$ is postive semidefinite, $f$ is convex and therefore also quasiconvex. Since $H$ is not negative semidefinite, $f$ is not convex. The $1$-superlevel of $f$ are the points $(x_1,x_2) \in \mathbb{R} \times \mathbb{R}_{++}$ such that $x_2 \leq x_1^2,$ i.e. the subset of the upper half plane under a parabola, which is clearly not convex. So $f$ is not quasiconcave. 
+
+\paragraph*{3.16 (f) }
+If $\alpha = 0$ or $\alpha = 1$ then $f$ is a linear function, so convex, quasiconvex, concave, quasiconcave. 
+\newline
+Now suppose $\alpha \in (0,1).$
+$$
+H(x) = \alpha (\alpha-1) x_1^{\alpha} x_2^{1-\alpha}
+\begin{bmatrix}
+    1/x_1^2       & -1/(x_1 x_2) \\
+    -1/(x_1 x_2)       & 1/x_2^2 \\
+\end{bmatrix}
+= \alpha (\alpha-1) x_1^{\alpha}  x_2^{1-\alpha}
+\begin{bmatrix}1/x_1 \\-1/x_2\end{bmatrix} [ 1/x_1 \ \ \  -1/x_2 ]
+$$
+
+Since $A^TA$ is positive semidefinite, $H(x)$ is negative semi definite, so $f$ is concave and therefore also quasiconcave. Since $f$ is concave and not linear, $f$ is not convex. The $1$-sublevel is the subset of $\mathbb{R}^2_{++}$ where $ y \leq x^{-\alpha/(1-\alpha)},$ which is the part of the first quadrant beneath a hyperbola-type curve. This is clearly not convex, so $f$ is not quasiconvex. 
+
+\paragraph*{3.36 (a)}
+Let $$g(x,y) = \sum_{i=1}^n x_i y_i - \max_{i=1,\ldots, n} x_{i}$$ so that $f^*(y) = \sup_{x\in \mathbb{R}^n} g(x,y).$
+\newline
+If $y_i<0$ then taking $x = -t \e_i$ gives $g(x,y) = -t y_i \to\infty$ as $t\infty$ so $f^*(y) = \infty.$ 
+\newline
+For the rest of the question we can assume that $y \succeq 0.$ Letting $x = t \mathbf{1},$ we have $g(x,y) = t \sum_{i=1}^n y_i - t,$ so if $\sum_{i=1}^n y_i \neq 1$ then $g(x,y) \to \infty$ as $t$ approaches one of either $-\infty$ or $\infty,$ so $f^*(y)  = \infty.$
+\newline
+On the other hand, if $\sum_{i=1}^n y_i = 1,$ then $\sum_{i=1}^n x_i y_i \leq \max_{i=1,\ldots, n} x_i,$ so $g(x,y) \leq 0.$ Equality is obtained with $x=0,$ so $f^*(y) = 0.$ 
+\newline
+In summary,
+
+
+\[
+  f^*(y) =
+  \begin{cases}
+                                   0 & \text{if $y \succeq 0$ and $\sum_{i=1}^n y_i = 1,$} \\
+                                   \infty & \text{otherwise} \\
+  \end{cases}
+\]
+
+\paragraph*{3.36 (b)}
+Let $$g(x,y) = \sum_{i=1}^n x_i y_i - \sum_{i=1}^r x_{[i]}$$ so that $f^*(y) = \sup_{x\in \mathbb{R}^n} g(x,y).$
+\newline
+If $y_i < 0,$ then taking $ x = -t \e_i$ gives $g(x,y) = -ty_i \to \infty$ as $t\to\infty,$ so $f^*(y) = \infty.$
+\newline
+If $y_i > 1,$ then taking $x = t\e_i$ gives $g(x,y) = t y_i -t \to \infty$ as $t \to \infty,$ so $f^*(y) = \infty.$ 
+\newline
+If $\sum_{i}^n y_i \neq r,$ then taking $x = t \mathbf{1}$ gives $g(x,y) = t(\sum_{i=1}^n y_i -r) \to \infty$ as $t$ approaches one of $-\infty$ or $\infty,$ so $f^*(y) = \infty.$  
+\newline
+The remaining case is if $\mathbf{0} \preceq y \preceq \mathbf{1}$ and $\sum_{i=1}^n y_i = r.$ In this case we have $$\sum_{i=1}^n x_i y_i \leq \sum_{i=1}^r x_{[i]},$$ as can be seen by taking the $y_i$ as weights and redistributing the weights to the $r$ largest components of $x.$ So $g(x,y) \leq 0$ for all $x \in \mathbb{R}^n,$ with equality if $x=0.$ So $f^*(y) = 0.$ 
+\newline
+In summary, 
+
+\[
+  f^*(y) =
+  \begin{cases}
+                                   0 & \text{if $\mathbf{0} \preceq y \preceq \mathbf{1}$ and $\sum_{i=1}^n y_i = r,$} \\
+                                   \infty & \text{otherwise} \\
+  \end{cases}
+\]
+
+\paragraph*{3.36 (e)}
+
+Let $$g(x,y) = \sum_{i=1}^n x_i y_i + \left(\p_{i=1}^n x_i \right)^{1/n}$$ so that $f^*(y) = \sup_{x\in \mathbb{R}^n_{++}} g(x,y).$ First note that if $y_i > 0 $ then considering $g$ with $x = t \e_i + t^{-1} \mathbf{1}$ gives 
+
+\begin{align*}
+ g(x,y) &= t y_i + \frac{1}{t} \sum_{j=1}^n y_j + t^{-(n-1)} (t + t^{-1}) \\
+ & \to \infty \text{ as } t\to\infty\\
+\end{align*}
+
+so that $f^*(y) = \infty.$ Now for the rest of this question we can assume that $y \preceq \mathbf{0}.$ In this case, the AM-GM inequality states that $$ \frac{1}{n} \sum_{i=1}^n x_i (-y_i) \geq \left( \p_{i=1}^n (-y_i x_i) \right)^{1/n}$$
+with equality if and only if $x_i(-y_i) = t \geq 0$ for all $i$ i.e. $x_iy_i$ is the same non-positive number for all $i.$ Therefore we have 
+
+$$ g(x,y) \leq \left( 1 - n \left(\p_{i=1}^n (-y_i)\right)^{1/n} \right) \left( \p_{i=1}^n x_i \right)^{1/n}$$ with equality if and only if $x_i(-y_i) = t$ for all $i,$ where $t$ is some non-negative number. Let $\alpha = \left( 1 - n \left(\p_{i=1}^n (-y_i)\right)^{1/n} \right)$ (i.e $\alpha$ denotes the first factor on the right hand side of the inequality above). If  $x_i = -t/y_i, t>0$ (so that we have equality above) then $$ g(x,y) = \frac{ \alpha t}{\p_{i=1}^n (-y_i)^{1/n}}.$$
+
+If $\alpha > 0,$ then taking $t\to\infty$ shows that $f^*(y) = \infty.$ On the other hand, if $\alpha \leq 0,$ then $g(x,y)\leq 0$ and attains arbitrarily close values to $0$ as $t\to 0^+,$ so that $f^*(y) = 0.$ In summary, 
+\[
+  f^*(y) =
+  \begin{cases}
+                                   0 & \text{if $y \preceq \mathbf{0}$ and $\p_{i=1}^n (-y_i)^{1/n} \geq 1/n,$} \\
+                                   \infty & \text{otherwise} \\
+  \end{cases}
+\]
+
+\paragraph{4.3}
+\
+\newline
+The optimization problem in question is a convex optimization problem with a differentiable objective, so we may use the optimality criterion (Boyd 4.2.3): $x'\in F$ is optimal if and only if $\nabla f_0(x) \cdot (x-x') \geq 0$ for all $x\in F.$ 
+\
+\newline
+Here we have $\nabla f_0(x) = Px + q,$ so $\nabla f_0(x^*) = \begin{bmatrix}
+    -1 \\
+    0  \\
+    2  \\
+   
+\end{bmatrix}.$ Therefore $$ \nabla f_0(x^*)(x-x^*) = 3 -x_1 + 2x_3.$$
+This is minimized over $F$ by taking the largest $x_1$ and the smallest $x_3$, i.e. $x_1 = 1$ and $x_3 = -1,$ in which case it evaluates to $0.$ So $x^*$ satisfies the criterion and is an optimal point. 
+
+\paragraph{4.8 a)}
+\
+\newline
+If $b$ is not in the range of $A,$ then $F = \emptyset$ and $p^* = \infty.$ If $b$ is in the range of $A,$ then $F\neq \emptyset.$ Let $x^*\in F$ (so $Ax^* = b$). For any $x\in F,$ we have $A(x-x^*) = Ax - Ax^* = b-b = 0,$ so $x-x^*\in \ker A.$ Therefore, if $c$ is orthogonal to the kernel of $A,$ then $c\cdot (x-x^*) = 0$ for all $x\in F,$ so $x^*$ is optimal by the same optimality criterion used in the previous question (Boyd 4.2.3). 
+\
+\newline
+If $c$ is not orthogonal to $\ker A$, then (by the Orthogonal Decomposition theorem) we can write $c = c_1 + c_2$ where $c_1 \in \ker A,$ $c_2 \in (\ker A)^{\perp},$ and $c_1\neq 0.$ Let $x = x^* - tc_1.$ Since $c_1 \in \ker A,$ we have $Ax = Ax^* - tAc_1 = Ax^* = b,$ so $x\in F$ i.e. $x$ is feasible. The objective function at this point is $c\cdot x = c \cdot x^* - t c\cdot c_1.$ Note that
+\begin{align*}
+ c\cdot c_1 &= (c_1 + c_2)\cdot c_1 \\
+            &= c_1\cdot c_1 + c_2 \cdot c_1
+\end{align*}
+Since $c_1 \neq 0,$ we have $c_1\cdot c_1 > 0.$ Since $c_2 \in (\ker A)^{\perp}$ and $c_1 \in \ker A,$ we have $c_2\cdot c_1 = 0.$ This shows that $c\cdot c_1>0,$ so the objective function goes to $-\infty$ as $t\to \infty,$ and $p^* = -\infty.$  To summarise:
+
+
+\[
+  p^* =
+  \begin{cases}
+                                   \infty & \text{if $b\notin \operatorname{range}(A)$} \\
+                                   c\cdot x \text{ ($x$ any feasible point)} & \text{if $b\in \operatorname{range}(A)$ and $c \in (\ker A)^{\perp}$} \\
+                                  -\infty & \text{if $b\in \operatorname{range}(A)$ and $c \notin (\ker A)^{\perp}$} \\
+  \end{cases}
+\]
+
+\paragraph*{4.8 c)}
+The objective function is the sum of terms involving just one of the variables, and the constraint can be written as constraints involving one variable only. Therefore, to solve the problem we can simply optimize over each variable separately.
+\
+\newline
+To minimize $c_i x_i$ subject to $l_i \leq x_i \leq u_i,$ we take $x_i^* = l_i$ if $c>0,$ $x_i^* = u_i$ if $c_i <0$ and can take any $x_i^*\in [l_i, u_i]$ if $c_i =0.$ We have $p^* = l \cdot c_+ + u \cdot c_-$ where the $i$-th components of $c_+, c_-$ are $\max(c_i,0), \min(c_i, 0)$ respectively. 
+
+\paragraph*{4.8 e)}
+Without loss of generality, we can rearrange the components of $c$ to be in nondecreasing order (and can rearrange them to their original order if a problem requires it). We must assign these $c_i$ some weights $x_i\in[0,1]$ such that $\sum_{i=1}^n x_i= \alpha \in [0,n]$ ($\alpha$ may or may not be an integer). To minimize this, we simply assign as much weight as allowed to the smallest $c_i$ (this could also be seen as the fact that the fractional knapsack problem is solved by the greedy algorithm). So we assign 
+\[
+  x_i^* =
+  \begin{cases}
+                                   1 & \text{if $i = 1, 2, \ldots, \lfloor \alpha \rfloor$} \\
+                                   \lfloor \alpha \rfloor - \alpha & \text{if $i=\lfloor \alpha \rfloor +1$} \\
+                                  0 & \text{if $i>\lfloor \alpha \rfloor +1$} \\
+  \end{cases}
+\]
+
+The optimal value is $$p^* = \sum_{i=1}^{\lfloor \alpha \rfloor} c_i + (\alpha - \lfloor \alpha \rfloor) c_{\lfloor \alpha \rfloor+1}$$
+\
+\newline
+If we replace the equality constraint by an inequality (so $\sum_{i=1}^n x_i \leq \alpha$), then again we can optimize the problem by assigning maximum allowed weight to any $c_i$ that would reduce the objective (i.e. $c_i < 0$). The main difference this time is that we are not forced to assign extra weight to any $c_i$ that would increase the objective ($c_i>0.)$ So we assign $\hat{x}^*_i = [c_i<0] x^*_i$ where $[P]$ is the Iverson Bracket (1 if P true, 0 if P false) and $x^*_i$ is from the equality version of the problem above. The optimal value is 
+ $$p^* = \sum_{i=1}^{\lfloor \alpha \rfloor} [c_i<0]c_i + (\alpha - \lfloor \alpha \rfloor) \ [c_{\lfloor \alpha \rfloor+1}<0] \ c_{\lfloor \alpha \rfloor+1}$$
+\paragraph*{4.9}
+\
+\newline
+Since $A$ is square and nonsingular, $A^{-1}$ exists and $y=Ax$ is a bijective transformation. Therefore, an equivalent problem is to minimize $c^TA^{-1}y$ subject to $y\preceq b.$
+\
+\newline
+If the $i$-th component of $c^T A^{-1}$ is greater than $0,$ then we can take $y = -t\e_i.$ For sufficiently large $t$ this $y$ is feasible, and as $t\to\infty$ the objective goes to $-\infty,$ so $p^* = -\infty.$ 
+\
+\newline
+The remaining case is if $(c^T A^{-1})^T \preceq 0.$ Since all the components are nonpositive, we can minimize the objective by assigning maximum weights i.e. taking $y = b.$ So $p^* = c^T A^{-1} b$ in this case. 
+
+
+
+
+
+\paragraph*{5.12}
+\
+\newline
+After introducing the new variables and constraints, the problem becomes to minimize $-\displaystyle\sum_{i=1}^m \log y_i$ subject to $ y = b - Ax,$ where the $i$-th row of $A$ is $a_i^T.$ The dual function is given by 
+
+$$ g(\nu) := \inf_{x,y} \left( -\sum_{i=1}^m \log y_i + \nu \cdot (y-b+Ax) \right)$$
+
+The term $\nu\cdot Ax = A^T\nu \cdot x$ can be taken to $-\infty$ (e.g. by $x= -t A^T\nu, t\to\infty$) unless $A^T\nu = 0.$ If $\nu_i \leq 0$ for any $i,$ then considering $y_i \to \infty$ we have $g(\nu) = -\infty.$ The remaining case is that $\nu \succ 0.$ The Lagrangian is separable, and simple calculus shows the components are minimized at $y_i = 1/\nu_i.$ Thus we have
+\[
+  g(\nu) =
+  \begin{cases}
+                                   \sum_{i=1}^m \log \nu_i - b\cdot \nu + m & \text{if $A^T\nu=0$ and $\nu \succ 0$} \\
+                                  0 & \text{otherwise} \\
+  \end{cases}
+\]
+
+Therefore a dual problem to the original problem is to maximize $\sum_{i=1}^m \log \nu_i - b\cdot \nu + m$ subject to $A^T\nu =0.$
+
+\paragraph*{5.31}
+\
+\newline
+A direct calculation gives the result.
+\begin{align*}
+ \nabla f_0(x^*)\cdot (x-x^*) &= - \sum_{i=1}^m \lambda^*_i \nabla f_i(x^*)\cdot (x-x^*) &\text{KKT4} \\
+ &= - \sum_{i=1}^m \lambda^*_i \left(f_i(x^*)+\nabla f_i(x^*)\cdot (x-x^*)\right) &\text{KKT3} \\
+ &\geq - \sum_{i=1}^m \lambda_i^* f_i(x) & \text{1st order criterion for convexity}\\
+ &\geq 0 &\text{KKT2 and $f_i(x)\leq 0$}
+\end{align*}
+
+
+
+\paragraph{6.2)}
+\
+\newline
+\paragraph{d)}
+\
+Since $x\mapsto x^2$ is monotonically increasing on $[0,\infty),$ we have $$\operatorname{argmin}_{x\in \mathbb{R}} \| xa - b \|_2 = \operatorname{argmin}_{x\in \mathbb{R}} \sum_{i=1}^n ( a_i x - b_i)^2.$$
+
+Let $f(x) = \sum_{i=1}^n (a_i x - b_i)^2.$ Note that $f$ is a sum of convex functions, so it is a convex function itself. We have 
+\begin{align*}
+ f'(x) &= 2 \sum_{i=1}^n (a_i x-b) \\
+       &= 2\left( x \left(\sum_{i=1}^n a_i\right) - \sum_{i=1}^n b_i \right)
+\end{align*}
+
+so $\displaystyle x = \frac{ \sum_{i=1}^n b_i }{\sum_{i=1}^n a_i}$ is a sationary point of $f.$ Since $f$ is convex function, it is the global minimizer of $f.$ Therefore we have 
+
+$$ \operatorname{argmin}_{x\in \mathbb{R}} \| xa - b \|_2 = \frac{ \sum_{i=1}^n b_i }{\sum_{i=1}^n a_i}.$$
+
+\paragraph{a)}
+\
+This is the special case of d) where $a = \mathbf{1}.$ In this case we have  
+$$ \operatorname{argmin}_{x\in \mathbb{R}} \| x\mathbf{1} - b \|_2 = \frac{1}{n}\sum_{i=1}^n b_i .$$
+
+\paragraph{b)}
+\
+Define $f(x, [b_1,\ldots, b_n]) = \sum_{i=1}^n |x - b_i|.$ Without loss of generality, we can assume that the $b_i$ are indexed so that they are monotonically non-decreasing. We are seeking $x^* = \operatorname{argmin}_{x\in \mathbb{R}} f(x, [b_1, \ldots, b_n]).$ We note here two key facts:\\
+
+Observation 1 (O1) - $f(x, [b_1, \ldots, b_n])$ has a global minimum, and attains it inside $[b_1, b_n].$ 
+\\
+Proof: If we take $x=b_n$ and increase $x,$ then every term in the sum increases. Similarly, if we take $x=b_1$ and decrease $x,$ again every term in the sum increases. So in searching for minima we can restrict ourself to $[b_1,b_n].$ Since $f$ is a continuous function, and continuous functions on closed and bounded domains attain a global minimum, we have proved the observation. \\
+\\
+Observation 2 (O2) - As $x$ varies in $[c, d],$ $|x-c| + |x-d| = d-c$ is constant. \\
+\\
+Now by O1, we have $x^* = \operatorname{argmin}_{x\in[b_1,b_n]} f(x,[b_1,\ldots, b_n]).$ \\
+By O2, we have $x^* = \operatorname{argmin}_{x\in[b_1,b_n]} f(x,[b_2,\ldots, b_{n-1}]).$ \\
+Again by O1, we have $x^* = \operatorname{argmin}_{x\in[b_2,b_{n-1}]} f(x,[b_2,\ldots, b_{n-1}]),$ and again by O2 we have \\
+$x^* = \operatorname{argmin}_{x\in[b_2,b_{n-1}]} f(x,[b_3,\ldots, b_{n-2}]).$ By repeatedly applying the two observations, we always reduce to the following cases: \\
+\
+If $n$ is odd: Then $n=2k+1$ for some $k\in \mathbb{N}$ and $x^* = \operatorname{argmin}_{x\in [b_k, b_{k+2}]} f(x, [b_{k+1}]) = b_{k+1}$ is the unique global minimizer.\\
+If $n$ is even: Then $n=2k$ for some $k\in \mathbb{N}$ and $x^* = \operatorname{argmin}_{x\in [b_k, b_{k+1}]} f(x, [b_k, b_{k+1}]).$ By O2, we have $x^* = [b_k, b_{k+1}]$ i.e. the set of global minimizers is $[b_k, b_{k+1}].$ 
+\\ To summarise, let $\operatorname{median}(b)$ denote the set of medians of a finite set $b.$ Then $x^* =  \operatorname{median}(b).$
+
+\paragraph{c)}
+\
+Without loss of generality we assume that $b_i$ are indexed so that they are monotonically non-decreasing. Let $$f(x) = \| x \mathbf{1} - b \|_{\infty} = \max_{i=1,\ldots, n} | x- b_i|.$$ If $x\geq b_n, $ then $f(x) = x - b_1 \geq b_n-b_1 = f(b_n).$ Similarly, if $x\leq b_1,$ then $f(x) = b_n - x \geq b_n - b_1 = f(b_1). $ Therefore the global minimum of $f$ occurs in $[b_1, b_n]. $\\
+\
+\newline
+Note that if $x\in [b_1, b_n],$ we have $f(x) = \max( |x-b_1|, |x-b_n|).$ If $x\in [b_1, (b_n-b_1)/2],$ we have $f(x) = |x-b_n|$ so the minimum of $f$ on $[b_1, (b_n-b_1)/2]$ is attained at $x = (b_n-b_1)/2.$ If $x\in [(b_n-b_1)/2, b_n],$ we have $f(x) = |x-b_1|$ so the minimum of $f$ on $[(b_n-b_1)/2, b_n]$ is attained at $x = (b_n-b_1)/2.$ Combining these shows that the unique global minimum of $f$ occurs at $x= (b_n-b_1)/2.$ \\
+In summary, $$ x^* = \frac{ \max_{i=1,\ldots, n} b_i - \min_{i=1,\ldots, n} b_i}{2}.$$
+
+\paragraph{6.6)}
+\
+Both a) and b) required the same initial set up. The Langrangian is given by $$ L(x,r,\nu) = \sum_{i=1}^m \phi(r_i) + \nu^T (Ax-b-r).$$ The $\nu^TAx$ term can be taken to $-\infty$ if $A^T\nu\neq 0,$ and vanishes if $A^T\nu = 0,$ leaving no terms depending on $x.$ Thus we have
+
+\[
+  g(\nu) =
+  \begin{cases}
+                                   -b\cdot\nu + \inf_{r\in\mathbb{R}^m} \left( \sum_{i=1}^m \phi(r_i) - \nu \cdot r\right) & \text{if }A^T\nu= 0 \\
+                                   -\infty & \text{if }A^T\nu\neq 0 \\
+  \end{cases}
+\]
+
+Since the function inside the $\inf$ is seperable in the components $r_i,$ we can equivalently take the infima componentwise, so we have 
+
+\[
+  g(\nu) =
+  \begin{cases}
+                                   -b\cdot\nu + \sum_{i=1}^m \inf_{r_i\in\mathbb{R}}\left(  \phi(r_i) - \nu_i r_i\right) & \text{if }A^T\nu= 0 \\
+                                   -\infty & \text{if }A^T\nu\neq 0 \\
+  \end{cases}
+\]
+
+Therefore we have 
+\begin{align*}
+\inf_{r_i\in\mathbb{R}}\left(  \phi(r_i) - \nu_i r_i \right) &= - \sup_{r_i \in \mathbb{R}} (\nu_i r_i - \phi(r_i)) \\
+              &= - \phi^*(\nu_i) \\ 
+\end{align*}
+so we have the simplified form 
+\[
+  g(\nu) =
+  \begin{cases}
+                                   -b\cdot\nu - \sum_{i=1}^m \phi^*(\nu_i) & \text{if }A^T\nu= 0 \\
+                                   -\infty & \text{if }A^T\nu\neq 0 \\
+  \end{cases}
+\]
+
+Therefore, the Lagrange dual problem is:
+\begin{align*}
+ &\text{maximise } -b\cdot \nu - \sum_{i=1}^m \phi^*(\nu_i) \\
+ &\text{subject to } A^T\nu = 0
+\end{align*}
+We now find expressions for $\phi^*$ in our particular cases. 
+\paragraph{a)}
+\
+We aim to compute $\phi^*(x) = \sup_{u\in\mathbb{R}}( xu - \phi(u)).$ First note that if $x>1,$ then as $u\to\infty$ we have $xu - \phi(u) = xu-u+1 = (x-1)u+1 \to\infty.$ Similarly, if $x<-1,$ then as $u\to-\infty$ we have $xu - \phi(u) = xu+u+1 = (x+1)u+1 \to \infty.$ Therefore we have $\phi^*(x) = \infty$ if $|x|>1.$  \\
+\newline
+Now consider the case where $|x|\leq 1.$ We have 
+
+\[
+  xu - \phi(u) =
+  \begin{cases}
+                                   xu & \text{if }|u|\leq 1  \\
+                                   xu - |u| +1 & \text{if } |u|>1 \\
+  \end{cases}
+\]
+
+The supremum over the first case occurs at $ u = \text{sign}(x),$ attaining the value $|x|.$ Over the second case, we see that the function is negative if $u$ and $x$ have opposite sign, and if they have the same sign then the function is equal to $|u|(|x|-1) +1.$ The bracketed term is non-positive, so the value is increased by taking $|u|$ towards $1,$ and the function value goes towards $|x|.$ Therefore we have $\phi^*(x) = |x|.$ To summarise, we have 
+\[
+  \phi^*(x) =
+  \begin{cases}
+                                   |x| & \text{if }|x|\leq 1  \\
+                                   \infty & \text{if } |x|>1 \\
+  \end{cases}
+\]
+and the Lagrange dual problem can be written as 
+\begin{align*}
+ &\text{maximise } -b\cdot \nu -\|\nu\|_1 \\
+ &\text{subject to } A^T\nu = 0, \|\nu\|_{\infty} \leq 1
+\end{align*}
+
+\paragraph{b)}
+\
+Again we aim to compute $\phi^*(x) = \sup_{u\in\mathbb{R}}( xu - \phi(u)).$ First note that if $x>2,$ then as $u\to\infty,$ we have $xu - \phi(u)  = xu-2u+1 = (x-2)u+1 \to \infty.$ Similarly, if $x<-2,$ then as $u\to-\infty$ we have $xu - \phi(u) = xu + 2u +1 = (x+2)u+1 \to \infty.$ Therefore we have $\phi^*(x) = \infty$ if $|x|>2.$ \\
+\newline
+Now consider the case where $|x| \leq 2.$ In the interval $|u|\leq 1,$ we have $\sup_{|u|\leq 1} (xu - u^2) = x^2/4$ (since the maximum of that quadratic occurs at $u = x/2$). In the interval $u >1,$ we have $xu - \phi(u) = xu - 2u+1 = (x-2)u+1.$ Since $x-2\leq 0,$ the supremum over $u>1$ is the value at $u=1,$ which is $x-1.$ Similarly, in the interval $u< -1,$ we have $xu - \phi(u) = xu+2u+1 = (x+2)u+1.$ Since $x+2 \geq 0,$ the supremum over $u<-1$ is the value at $u=-1,$ which is $-x-1.$ The supremum as $u$ ranges over $\mathbb{R}$ is the maximum of these 3 candidates. Note that $x^2/4 - (x-1) = (x-2)^2/4 \geq 0,$ and that $x^2/4 - (-x-1) = (x+2)^2/4 \geq 0,$ we have $\phi^*(x) = x^2/4.$ To summarise, we have   
+
+\[
+  \phi^*(x) =
+  \begin{cases}
+                                   x^2/4 & \text{if }|x|\leq 2  \\
+                                   \infty & \text{if } |x|>2 \\
+  \end{cases}
+\]
+
+and the Lagrange dual problem can be written as 
+\begin{align*}
+ &\text{maximise } -b\cdot \nu -\|\nu\|^2_2/4 \\
+ &\text{subject to } A^T\nu = 0, \|\nu\|_{\infty} \leq 2
+\end{align*}
+
+
+\paragraph{7.6}
+\
+Note: the question should actually state that the mean is $b/a,$ not $1/a.$ \\
+\newline
+We can compute the density of $y$ as follows:
+\begin{align*}
+ \Phi_y(t) &= \mathbb{P}(y \leq t) \\
+           &= \mathbb{P}\left( \frac{x+b}{a} \leq t \right) \\
+           &= \mathbb{P}(x \leq at -b) \\
+           &= \Phi_x(at-b)
+\end{align*}
+Differentiating both sides with respect to $t$ gives 
+\begin{align*}
+ p_y(t) &= \frac{d}{dt} \Phi_x(at-b) \\
+        &= a \Phi_x'(at-b) \\
+        &= a p_x(at-b)
+\end{align*}
+
+The likelihood of observing samples $y_1,\ldots, y_n$ is equal to $\prod_{i=1}^n p_y(y_i).$ Since $\log$ is a monotonically increasing function, to find our ML estimates we can instead minimise the negative log-likelihood:
+
+\begin{align*}
+ -\log\left(\prod_{i=1}^n p_y(y_i)\right) &= -\sum_{i=1}^n \log p_y(y_i) \\
+                                         &= -\sum_{i=1}^n  \left( \log a + \log p_x(ay_i-b) \right)\\
+                                         &= -n\log a - \sum_{i=1}^n \log p_x(ay_i-b)
+\end{align*}
+
+Since $p_x$ is log-concave, $\log p_x$ is by definition a concave function. Pre-composing a concave function with an affine function gives a concave function, so $\log p_x(ay_i-b)$ is a concave function. Sums of concave functions are concave, and $\log a$ is concave, so the negative log-likelihood function is a convex function. Thus, finding the ML estimates requires minimising a convex function with no constraints, so it is a convex problem. In the case of the Laplacian density $p_x(t) = \exp(-2|t|),$ the ML estimates of $a,b$ are the values which minimise $-n\log a +2 \sum_{i=1}^n |ay_i-b|.$ As the hint suggests, we first minimise over $b$ then over $a.$ Considering $a$ constant, the minimum over $b$ is given by the result we derived in 6.2b), and we have $b_{ML} = \operatorname{median}(ay) = a\operatorname{median}(y).$ With this value of $b,$ we now need to minimise the following over $a:$
+
+$$ - n \log a + 2a \sum_{i=1}^n | y_i - \text{median}(y)|$$
+
+Differentiating with respect to $a$ shows that $$a_{ML} = \frac{n}{2 \sum_{i=1}^n |y_i - \text{median}(y)|},$$ so we have computed analytical forms for the ML estimates in the case of the Laplacian density. \\
+\newline
+Note: There are several ways to justify the fact that we can minimise over $b$ first then $a$ in this case. One way is to consider the sequence of functions $f_k(x) = (x^2+1/k)^{1/2}$ as $k\to\infty,$ which converges uniformly to $|x|.$ If we consider the sequence of minimisation problems :
+
+$$ \text{ minimise } -n \log a + 2a \sum_{i=1}^n f_k(y_i - b/a)$$
+then their solutions $a^*_k, b^*_k$ converge to $a_{ML}, b_{ML}$ (due to the uniform convergence of $f_k$ to $|\cdot|$). For each of these problems, we again find their solution by minimising over $b$ and then $a,$ but then we actually verify by substitution that these values of $a$ and $b$ make the gradient vanish, so that they are indeed the minimisers. The non-smoothness of $|\cdot|$ is what forces us to use this approximating sequence (we can not simply verify the gradient vanishes with our found values of $a_{ML}, b_{ML}$). Generalising this approach in a more elegant and systematic way is the theory of subgradients, which can also be applied to verify that the found ML estimates are indeed global minimisers (since the subgradient of $| \cdot|$ exists and is easy to calculate). See, for example, 'Lectures on Convex Optimization' (Nesterov, 2018).
+
+\paragraph{8.24}
+\
+Let $I = \{ 1, 2, \ldots, N\}$ and $J = \{ 1, 2, \ldots, M\}.$ Rearranging the equation in the question statement slightly, the weight error margin is the maximum $\rho$ such that $$u\cdot x_i \geq b - a\cdot x_i, \ \ i\in I$$ and $$u\cdot y_j \leq b - a\cdot y_j, \ \ j\in J$$ for all $u$ inside the ball $\| u \|_2 \leq \rho.$ The first set of constraints is true if and only if $$\min_{\|u\|_2\leq \rho} u\cdot x_i \geq b-a\cdot x_i, \ \ i \in I.$$ By the Cauchy-Schwarz inequality, this minimum is attained at $\displaystyle u = -\frac{\rho}{\| x_i\|_2 } x_i,$ so an equivalent form of the constraint is $$\rho \| x_i \|_2 \leq a\cdot x_i -b.$$
+\newline
+Similarly, the second set of constraints is true if and only if 
+$$\max_{\| u \|_2 \leq \rho} u \cdot y_j \leq b-a\cdot y_j, \ \ j\in J.$$
+By the Cauchy-Schwarz inequality, thie maximum is attained at $\displaystyle u = \frac{\rho}{\| y_j\|_2} y_j,$ so an equivalent form of the constraint is $$\rho \| y_j\|_2 \leq b - a\cdot y_j.$$
+So the weight error margin is the maximum $\rho$ such that $$ \rho \leq \frac{a\cdot x_i -b}{\| x_i\|_2}, \ \ i \in I$$ and $$\rho \leq \frac{a\cdot x_i -b}{\| x_i\|_2},, \ \ j\in J.$$ In other words, the weight error margin is equal to $$ \min \left\{ \frac{a\cdot x_i -b}{\| x_i\|_2},\frac{a\cdot x_i -b}{\| x_i\|_2} \ \ \bigg| \ \ i\in I, \ j\in J \right\}.$$\\
+\newline
+Therefore, to maximise the weight error margin we solve the convex problem:
+\begin{align*}
+ \text{maximise \ \ \ \  } &\rho \\
+ \text{subject to \ \ \ } & a\cdot x_i - b \geq \rho \| x_i\|_2, \ \ i \in I \\
+                          & b-a\cdot y_i \geq \rho \|y_j\|_2, \ \ j\in J\\
+                          & \| a\|_2 \leq 1
+\end{align*}
+
+\end{document}
